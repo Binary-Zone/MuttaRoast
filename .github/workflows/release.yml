@@ -45,7 +45,7 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
           git commit -am "chore(version): bump app version"
-          git push origin --no-verify --force
+          git push origin HEAD:main --no-verify --force
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
