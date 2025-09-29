@@ -43,9 +43,8 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          npm run update-version 0.0.2
 
-          git commit -am "chore(version): bump to 0.0.2"
+          git commit -am "chore(version): bump app version"
           git push origin --no-verify --force
 
         env:
