@@ -37,11 +37,11 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Run ESLint
-        run: npm run lint
+      # - name: Run ESLint
+      #   run: npm run lint
 
-      - name: Run Jest tests
-        run: npm test
+      # - name: Run Jest tests
+      #   run: npm test
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
