@@ -65,3 +65,25 @@ jobs:
           title: "chore: bump version to ${{ env.GITHUB_REF_NAME }}"
           body: "Automated version bump from GitHub App"
           commit-message: "chore: bump version ${{ env.GITHUB_REF_NAME }}"
+
+  auto-merge:
+    runs-on: ubuntu-latest
+    needs: build-ios-app
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.VERSION_BUMPER_APPID }}
+          private-key: ${{ secrets.VERSION_BUMPER_SECRET }}
+
+      - name: Wait for checks and merge
+        uses: pascalgn/automerge-action@v0.16.3
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          MERGE_METHOD: squash
+          MERGE_DELETE_BRANCH: true
+          MERGE_COMMIT_MESSAGE: pull-request-title
