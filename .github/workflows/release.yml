@@ -52,9 +52,13 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-
           git commit -am "chore(version): bump app version"
-          git push origin HEAD:main --no-verify --force
 
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create PR for version bump
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          branch: chore/version-bump-${{env.GITHUB_REF_NAME}}
+          title: "chore: bump version to ${{ env.GITHUB_REF_NAME }}"
+          body: "Automated version bump from GitHub App"
+          commit-message: "chore: bump version ${{ env.GITHUB_REF_NAME }}"
