@@ -59,6 +59,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
           branch: chore/version-bump-${{env.GITHUB_REF_NAME}}
+          base: main
           title: "chore: bump version to ${{ env.GITHUB_REF_NAME }}"
           body: "Automated version bump from GitHub App"
           commit-message: "chore: bump version ${{ env.GITHUB_REF_NAME }}"
