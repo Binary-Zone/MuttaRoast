@@ -25,6 +25,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
 
@@ -52,7 +53,8 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git commit -am "chore(version): bump app version"
+          git add package.json package-lock.json
+          git commit -m "chore(version): bump app version"
 
       - name: Create PR for version bump
         uses: peter-evans/create-pull-request@v6
