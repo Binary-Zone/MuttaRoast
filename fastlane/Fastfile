@@ -1,0 +1,11 @@
+opt_out_usage
+
+platform :android do
+    desc "Build Android Debug APK (for local install)"
+    lane :release_android_dev do
+      gradle(
+        task: "assembleRelease",
+        project_dir: "android"
+      )
+    end
+end
