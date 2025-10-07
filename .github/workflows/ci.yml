@@ -43,20 +43,20 @@ jobs:
       # - name: Run Jest tests
       #   run: npm test
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.1.0
+      # - name: Setup Ruby
+      #   uses: ruby/setup-ruby@v1
+      #   with:
+      #     ruby-version: 3.1.0
 
-      - name: Install Fastlane
-        run: gem install fastlane
+      # - name: Install Fastlane
+      #   run: gem install fastlane
 
-      - name: Build Android Debug App
-        run: fastlane android release_android_dev
+      # - name: Build Android Debug App
+      #   run: fastlane android release_android_dev
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        with:
-          name: App
-          path: android/app/build/outputs/apk/release/app-release.apk
+      # - name: Upload APK
+      #   uses: actions/upload-artifact@v4
+      #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      #   with:
+      #     name: App
+      #     path: android/app/build/outputs/apk/release/app-release.apk
