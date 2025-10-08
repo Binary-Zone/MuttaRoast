@@ -78,10 +78,11 @@ jobs:
           PR_URL=$(gh pr create --title "chore(version): bump app version ${{env.GITHUB_REF_NAME}}" --body "Update app version" --base main --head chore/version-bump-${{env.GITHUB_REF_NAME}})
           PR_NUMBER=$(echo "$PR_URL" | awk -F'/' '{print $NF}')
           echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+          gh pr review $PR_NUMBER --approve -b "Approving as admin"
 
       - name: Merge PR
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           pr_number=${{ env.PR_NUMBER }}
-          gh pr merge $pr_number --auto --admin --squash
+          gh pr merge $pr_number --auto --squash
