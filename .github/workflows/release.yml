@@ -68,18 +68,20 @@ jobs:
       #     body: "Automated version bump from GitHub App"
       #     commit-message: "chore: bump version ${{ env.GITHUB_REF_NAME }}"
       
-      - name: Set PR number
-        run: echo "PR_NUMBER=${{ steps.pr.outputs.pull-request-number }}" >> $GITHUB_ENV
+      # - name: Set PR number
+      #   run: echo "PR_NUMBER=${{ steps.pr.outputs.pull-request-number }}" >> $GITHUB_ENV
 
       - name: Create PR
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          gh pr create --title "chore(version): bump app version ${{env.GITHUB_REF_NAME}}" --body "Update app version" --base main --head chore/version-bump-${{env.GITHUB_REF_NAME}}
+          PR_URL=$(gh pr create --title "chore(version): bump app version ${{env.GITHUB_REF_NAME}}" --body "Update app version" --base main --head chore/version-bump-${{env.GITHUB_REF_NAME}})
+          PR_NUMBER=$(echo "$PR_URL" | awk -F'/' '{print $NF}')
+          echo "PR_NUMBER=${{ PR_NUMBER }}" >> $GITHUB_ENV
 
       - name: Merge PR
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          pr_number=$(gh pr list --state open --limit 1 --json number --jq '.[0].number')
+          pr_number=${{ env.PR_NUMBER }}
           gh pr merge $pr_number --admin --squash
