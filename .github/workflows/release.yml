@@ -77,7 +77,7 @@ jobs:
         run: |
           PR_URL=$(gh pr create --title "chore(version): bump app version ${{env.GITHUB_REF_NAME}}" --body "Update app version" --base main --head chore/version-bump-${{env.GITHUB_REF_NAME}})
           PR_NUMBER=$(echo "$PR_URL" | awk -F'/' '{print $NF}')
-          echo "PR_NUMBER=${{ PR_NUMBER }}" >> $GITHUB_ENV
+          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Merge PR
         env:
