@@ -73,13 +73,13 @@ jobs:
 
       - name: Create PR
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           gh pr create --title "chore(version): bump app version ${{env.GITHUB_REF_NAME}}" --body "Update app version" --base main --head chore/version-bump-${{env.GITHUB_REF_NAME}}
 
       - name: Merge PR
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           pr_number=$(gh pr list --state open --limit 1 --json number --jq '.[0].number')
-          gh pr merge $pr_number --merge
+          gh pr merge $pr_number --admin --squash
