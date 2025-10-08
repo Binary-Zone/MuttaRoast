@@ -84,4 +84,4 @@ jobs:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           pr_number=${{ env.PR_NUMBER }}
-          gh pr merge $pr_number --admin --squash
+          gh pr merge $pr_number --auto --admin --squash
