@@ -16,18 +16,12 @@ jobs:
     runs-on: macos-15
 
     steps:
-      - uses: actions/create-github-app-token@v1
-        id: app-token
-        with:
-          app-id: ${{ vars.VERSION_BUMPER_APPID }}
-          private-key: ${{ secrets.VERSION_BUMPER_SECRET }}
-
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
-          token: ${{ steps.app-token.outputs.token }}
+          token: ${{ secrets.CI_GITHUB_TOKEN }}
 
       - name: Setup Node.js with GitHub Packages auth
         uses: actions/setup-node@v4
@@ -51,12 +45,17 @@ jobs:
 
       - name: Commit version updates
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git config --global user.name 'sidharth.venadan'
+          git config --global user.email 'sidharth.v.mtr@gmail.com'
           git checkout -b chore/version-bump-${{env.GITHUB_REF_NAME}}
           git add package.json package-lock.json
           git commit -m "chore(version): bump app version ${{env.GITHUB_REF_NAME}}"
-          git push -f -u --no-verify origin HEAD
+
+          DETACHED_COMMIT=$(git rev-parse HEAD)
+
+          git checkout main && git pull origin main
+          git cherry-pick "$DETACHED_COMMIT"
+          git push origin main --no-verify
 
       # - name: Create PR for version bump
       #   uses: peter-evans/create-pull-request@v6
@@ -71,18 +70,18 @@ jobs:
       # - name: Set PR number
       #   run: echo "PR_NUMBER=${{ steps.pr.outputs.pull-request-number }}" >> $GITHUB_ENV
 
-      - name: Create PR
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: |
-          PR_URL=$(gh pr create --title "chore(version): bump app version ${{env.GITHUB_REF_NAME}}" --body "Update app version" --base main --head chore/version-bump-${{env.GITHUB_REF_NAME}})
-          PR_NUMBER=$(echo "$PR_URL" | awk -F'/' '{print $NF}')
-          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
-          gh pr review $PR_NUMBER --approve -b "Approving as admin"
+      # - name: Create PR
+      #   env:
+      #     GH_TOKEN: ${{ steps.app-token.outputs.token }}
+      #   run: |
+      #     PR_URL=$(gh pr create --title "chore(version): bump app version ${{env.GITHUB_REF_NAME}}" --body "Update app version" --base main --head chore/version-bump-${{env.GITHUB_REF_NAME}})
+      #     PR_NUMBER=$(echo "$PR_URL" | awk -F'/' '{print $NF}')
+      #     echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+      #     gh pr review $PR_NUMBER --approve -b "Approving as admin"
 
-      - name: Merge PR
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: |
-          pr_number=${{ env.PR_NUMBER }}
-          gh pr merge $pr_number --auto --squash
+      # - name: Merge PR
+      #   env:
+      #     GH_TOKEN: ${{ steps.app-token.outputs.token }}
+      #   run: |
+      #     pr_number=${{ env.PR_NUMBER }}
+      #     gh pr merge $pr_number --auto --squash
